@@ -16,8 +16,7 @@ export function Footer() {
               <span className="text-xl font-bold">Berries</span>
             </div>
             <p className="text-purple-200 mb-4 max-w-md leading-relaxed">
-              Empowering financial institutions and individuals with advanced credit score prediction 
-              technology to make smarter lending decisions in Zimbabwe.
+              Berries is a leading provider of credit scoring and risk assessment solutions, helping businesses make informed financial decisions with confidence.
             </p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-purple-200">
@@ -26,11 +25,11 @@ export function Footer() {
               </div>
               <div className="flex items-center space-x-2 text-purple-200">
                 <Phone className="h-4 w-4" />
-                <span>+263 713 040 153</span>
+                <span>+263 71 309 4796</span>
               </div>
               <div className="flex items-center space-x-2 text-purple-200">
                 <Mail className="h-4 w-4" />
-                <span>info@creditscorepro.zw</span>
+                <span>berries@info.zw</span>
               </div>
             </div>
           </div>

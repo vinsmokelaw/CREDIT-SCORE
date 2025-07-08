@@ -8,17 +8,17 @@ export function Landing() {
   const features = [
     {
       icon: <TrendingUp className="h-8 w-8 text-purple-500" />,
-      title: 'Advanced Prediction',
+      title: 'Alpha Predictions',
       description: 'Machine learning algorithms provide accurate credit score predictions with 95% accuracy rate.'
     },
     {
       icon: <Shield className="h-8 w-8 text-purple-500" />,
-      title: 'Secure & Compliant',
+      title: 'Secure',
       description: 'Bank-grade security with full compliance to Zimbabwe financial regulations.'
     },
     {
       icon: <Users className="h-8 w-8 text-purple-500" />,
-      title: 'Dual Interface',
+      title: 'Dual UI',
       description: 'Separate dashboards for banks and clients with tailored features for each user type.'
     },
     {
@@ -30,34 +30,50 @@ export function Landing() {
 
   const testimonials = [
     {
-      name: 'Sarah Mukamuri',
+      name: 'Lyncia Chiguri',
       role: 'Loan Officer, CBZ Bank',
       content: 'CreditScore Pro has transformed our lending process. We can now make faster, more accurate decisions.',
       rating: 5
     },
     {
-      name: 'David Mutasa',
+      name: 'Auther King',
       role: 'Small Business Owner',
-      content: 'The platform helped me understand my credit profile and secure the loan I needed for expansion.',
+      content: 'Berries helped me understand my credit and get a loan for expansion!',
       rating: 5
     }
   ];
 
   const stats = [
-    { number: '10,000+', label: 'Credit Scores Processed' },
-    { number: '50+', label: 'Partner Banks' },
-    { number: '95%', label: 'Prediction Accuracy' },
-    { number: '24/7', label: 'System Availability' }
+    { 
+      number: '5 000+', 
+      label: 'Scores Processed',
+      icon: <TrendingUp className="h-6 w-6 text-purple-500" />
+    },
+    { 
+      number: '20+', 
+      label: 'Trusted Banks',
+      icon: <Users className="h-6 w-6 text-purple-500" />
+    },
+    { 
+      number: '85%', 
+      label: 'Accuracy',
+      icon: <CheckCircle className="h-6 w-6 text-purple-500" />
+    },
+    { 
+      number: '24/7', 
+      label: 'System Availability',
+      icon: <Shield className="h-6 w-6 text-purple-500" />
+    }
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero Section - Card Removed */}
       <section className="relative bg-gradient-to-br from-purple-50 to-white py-20 overflow-hidden">
         <div className={`absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%238b5cf6" fill-opacity="0.03"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] animate-float`}></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 gap-12 items-center">
             <div className="animate-slide-up">
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
                 Reliable Credit Score
@@ -82,72 +98,45 @@ export function Landing() {
                 </Link>
               </div>
             </div>
-            
-            <div className="relative animate-slide-in-right">
-              <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold text-gray-900">Credit Score</h3>
-                    <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                      Excellent
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section - Now as Cards with Slide-up Animation */}
+          <section className="py-16 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {stats.map((stat, index) => (
+                  <Card 
+                    key={index} 
+                    className="text-center animate-slide-up p-6" 
+                    style={{ 
+                      animationDelay: `${index * 0.1}s`,
+                      opacity: 0, 
+                      transform: 'translateY(20px)' 
+                    }}
+                  >
+                    <div className="bg-purple-50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                      {stat.icon}
                     </div>
-                  </div>
-                  
-                  <div className="relative">
-                    <div className="w-full bg-gray-200 rounded-full h-4">
-                      <div className="bg-gradient-to-r from-purple-500 to-green-500 h-4 rounded-full w-4/5 transition-all duration-1000"></div>
+                    <div className="text-3xl md:text-4xl font-bold text-purple-500 mb-2">
+                      {stat.number}
                     </div>
-                    <div className="text-center mt-4">
-                      <span className="text-4xl font-bold text-purple-500">785</span>
-                      <span className="text-gray-500 ml-2">/ 850</span>
+                    <div className="text-gray-600 text-sm md:text-base">
+                      {stat.label}
                     </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-500">24</div>
-                      <div className="text-sm text-gray-500">On-time Payments</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-500">15%</div>
-                      <div className="text-sm text-gray-500">Credit Utilization</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-yellow-500">3</div>
-                      <div className="text-sm text-gray-500">Credit Accounts</div>
-                    </div>
-                  </div>
-                </div>
+                  </Card>
+                ))}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      {/* Stats */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                <div className="text-3xl md:text-4xl font-bold text-purple-500 mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-gray-600 text-sm md:text-base">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
+      {/* Features Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose CreditScore Pro?
+              Why Choose Berries?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our platform combines cutting-edge technology with deep understanding of the Zimbabwe financial market
@@ -172,12 +161,12 @@ export function Landing() {
         </div>
       </section>
 
-      {/* How it Works */}
+      {/* How it Works Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              How It Works
+              Easy to Use
             </h2>
             <p className="text-xl text-gray-600">
               Get started in three simple steps
@@ -203,7 +192,7 @@ export function Landing() {
                 2
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Input Information
+                Enter Credentials
               </h3>
               <p className="text-gray-600">
                 Provide financial details through our secure, user-friendly interface designed for accuracy
@@ -216,7 +205,7 @@ export function Landing() {
                 3
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Get Results
+                Receive Predictions
               </h3>
               <p className="text-gray-600">
                 Receive instant, accurate credit score predictions with detailed insights and recommendations
@@ -226,12 +215,12 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Testimonials Section */}
       <section className="py-20 bg-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              What Our Users Say
+              Client Feedback
             </h2>
             <p className="text-xl text-gray-600">
               Trusted by financial institutions and individuals across Zimbabwe
@@ -273,7 +262,7 @@ export function Landing() {
             Ready to Transform Your Credit Journey?
           </h2>
           <p className="text-xl text-purple-100 mb-8 leading-relaxed">
-            Join thousands of satisfied users who trust CreditScore Pro for their financial decisions
+           Be part of the Thousands who trust Berries
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/signup">
