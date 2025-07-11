@@ -6,7 +6,7 @@ import { Button } from '../../components/UI/Button';
 export function ClientDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Mock data
+
   const creditScore = 785;
   const scoreChange = 12;
   const loanApplications = [
@@ -81,7 +81,7 @@ export function ClientDashboard() {
             Credit Report
           </h1>
           <p className="text-gray-600">
-            Control and manage your Credit Score
+            Credit Score Handling
           </p>
         </div>
 

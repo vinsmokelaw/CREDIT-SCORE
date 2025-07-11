@@ -83,7 +83,7 @@ export function Footer() {
 
         <div className="border-t border-purple-700 mt-8 pt-8 text-center">
           <p className="text-purple-200">
-            © 2025 CreditScore Pro. All rights reserved. | 
+            © 2025 Berries. All rights reserved. | 
             <Link to="/privacy" className="text-purple-400 hover:text-purple-300 ml-1">
               Privacy Policy
             </Link> | 
