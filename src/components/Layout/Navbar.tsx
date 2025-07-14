@@ -11,7 +11,7 @@ export function Header() {
   const handleLogout = () => {
     logout();
     navigate('/');
-    setIsMobileMenuOpen(false);
+    setIsMobileMenuOpen(true);
   };
 
   const toggleMobileMenu = () => {
