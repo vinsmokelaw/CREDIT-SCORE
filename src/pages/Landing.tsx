@@ -81,7 +81,7 @@ export function Landing() {
                 <br />for Zimbabweans
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Empower your financial decisions with AI-driven credit score predictions. 
+                 credit score predictions. 
                 Whether you're a bank or an individual, get accurate insights to make smarter lending choices.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -195,7 +195,7 @@ export function Landing() {
                 Enter Credentials
               </h3>
               <p className="text-gray-600">
-                Provide financial details through our secure, user-friendly interface designed for accuracy
+                Provide financial details through our secure interface to generate your credit score
               </p>
               <div className="hidden md:block absolute top-8 right-0 transform translate-x-1/2 w-8 h-0.5 bg-purple-200"></div>
             </div>
@@ -205,10 +205,10 @@ export function Landing() {
                 3
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Receive Predictions
+                Get Predictions
               </h3>
               <p className="text-gray-600">
-                Receive instant, accurate credit score predictions with detailed insights and recommendations
+                Get predictions with detailed insights and recommendations
               </p>
             </div>
           </div>

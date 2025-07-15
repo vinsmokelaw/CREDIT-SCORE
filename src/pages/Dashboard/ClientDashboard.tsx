@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { CreditCard, TrendingUp, CheckCircle, FileText, Calculator, Target, Award } from 'lucide-react';
+import { CreditCard, TrendingUp, CheckCircle, FileText, Calculator, Target, Award, Bell, AlertTriangle, Info, XCircle, BookOpen, ArrowUp, ArrowDown, Users, DollarSign } from 'lucide-react';
 import { Card } from '../../components/UI/Card';
 import { Button } from '../../components/UI/Button';
 
 export function ClientDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
-
+  const [showAlerts, setShowAlerts] = useState(true);
+  const [simulatorScore, setSimulatorScore] = useState(785);
+  const [simulatorPayment, setSimulatorPayment] = useState(500);
+  const [simulatorDebt, setSimulatorDebt] = useState(8000);
 
   const creditScore = 785;
   const scoreChange = 12;
@@ -44,6 +47,90 @@ export function ClientDashboard() {
     }
   ];
 
+  // Credit Score Alerts for clients
+  const creditAlerts = [
+    {
+      id: 1,
+      type: 'info',
+      title: 'Credit Score Improved',
+      message: 'Your credit score increased by 12 points this month due to consistent payments',
+      timestamp: '2 hours ago',
+      severity: 'low'
+    },
+    {
+      id: 2,
+      type: 'warning',
+      title: 'Credit Utilization Alert',
+      message: 'Your credit utilization is at 75%. Consider paying down balances to improve your score',
+      timestamp: '1 day ago',
+      severity: 'medium'
+    },
+    {
+      id: 3,
+      type: 'info',
+      title: 'Payment Reminder',
+      message: 'Your next payment is due in 3 days. Set up auto-pay to never miss a payment',
+      timestamp: '3 hours ago',
+      severity: 'low'
+    }
+  ];
+
+  // Educational Tips for clients
+  const educationalTips = [
+    {
+      id: 1,
+      category: 'Credit Basics',
+      title: 'Understanding Your Credit Score',
+      content: 'Your credit score is a three-digit number that represents your creditworthiness. Scores range from 300-850, with higher scores indicating better credit health.',
+      readTime: '3 min read',
+      difficulty: 'Beginner'
+    },
+    {
+      id: 2,
+      category: 'Payment Tips',
+      title: 'The Power of On-Time Payments',
+      content: 'Payment history makes up 35% of your credit score. Even one late payment can drop your score by 60-110 points.',
+      readTime: '4 min read',
+      difficulty: 'Beginner'
+    },
+    {
+      id: 3,
+      category: 'Credit Utilization',
+      title: 'Optimal Credit Card Usage',
+      content: 'Keep your credit utilization below 30% of your available credit. For the best scores, aim for under 10%.',
+      readTime: '5 min read',
+      difficulty: 'Intermediate'
+    },
+    {
+      id: 4,
+      category: 'Building Credit',
+      title: 'Building Credit from Scratch',
+      content: 'If you have no credit history, consider a secured credit card or becoming an authorized user on someone else\'s account.',
+      readTime: '6 min read',
+      difficulty: 'Beginner'
+    }
+  ];
+
+  // Credit Simulator Functions
+  const simulateScoreChange = (currentScore: number, payment: number, debt: number) => {
+    let newScore = currentScore;
+    
+    // Payment history impact (35% of score)
+    if (payment >= 500) newScore += 15;
+    else if (payment >= 300) newScore += 8;
+    else if (payment >= 100) newScore += 3;
+    else newScore -= 10;
+    
+    // Credit utilization impact (30% of score)
+    const utilizationRatio = debt / 20000; // Assuming $20k credit limit
+    if (utilizationRatio < 0.1) newScore += 20;
+    else if (utilizationRatio < 0.3) newScore += 10;
+    else if (utilizationRatio < 0.5) newScore -= 5;
+    else newScore -= 20;
+    
+    return Math.max(300, Math.min(850, Math.round(newScore)));
+  };
+
   const getScoreColor = (score: number) => {
     if (score >= 750) return 'text-success-500';
     if (score >= 650) return 'text-warning-500';
@@ -51,9 +138,19 @@ export function ClientDashboard() {
   };
 
   const getScoreLabel = (score: number) => {
-    if (score >= 750) return 'Excellent';
-    if (score >= 650) return 'Good';
-    return 'Fair';
+    if (score >= 800) return 'Excellent';
+    if (score >= 740) return 'Very Good';
+    if (score >= 670) return 'Good';
+    if (score >= 580) return 'Fair';
+    return 'Poor';
+  };
+
+  const getScoreCategory = (score: number) => {
+    if (score >= 800) return { label: 'Excellent', color: 'text-success-600', bgColor: 'bg-success-100' };
+    if (score >= 740) return { label: 'Very Good', color: 'text-success-600', bgColor: 'bg-success-100' };
+    if (score >= 670) return { label: 'Good', color: 'text-warning-600', bgColor: 'bg-warning-100' };
+    if (score >= 580) return { label: 'Fair', color: 'text-warning-600', bgColor: 'bg-warning-100' };
+    return { label: 'Poor', color: 'text-error-600', bgColor: 'bg-error-100' };
   };
 
   const getStatusColor = (status: string) => {
@@ -65,10 +162,30 @@ export function ClientDashboard() {
     }
   };
 
+  const getAlertIcon = (type: string) => {
+    switch (type) {
+      case 'error': return <XCircle className="h-5 w-5 text-error-500" />;
+      case 'warning': return <AlertTriangle className="h-5 w-5 text-warning-500" />;
+      case 'info': return <Info className="h-5 w-5 text-primary-500" />;
+      default: return <Bell className="h-5 w-5 text-gray-500" />;
+    }
+  };
+
+  const getAlertBorderColor = (severity: string) => {
+    switch (severity) {
+      case 'high': return 'border-l-error-500';
+      case 'medium': return 'border-l-warning-500';
+      case 'low': return 'border-l-primary-500';
+      default: return 'border-l-gray-500';
+    }
+  };
+
   const tabs = [
     { id: 'overview', label: 'Overview', icon: <TrendingUp className="h-4 w-4" /> },
     { id: 'applications', label: 'Loan Applications', icon: <FileText className="h-4 w-4" /> },
-    { id: 'calculator', label: 'Loan Calculator', icon: <Calculator className="h-4 w-4" /> },
+    { id: 'alerts', label: 'Credit Alerts', icon: <Bell className="h-4 w-4" /> },
+    { id: 'simulator', label: 'Credit Simulator', icon: <Calculator className="h-4 w-4" /> },
+    { id: 'education', label: 'Education', icon: <BookOpen className="h-4 w-4" /> },
     { id: 'improvement', label: 'Score Improvement', icon: <Award className="h-4 w-4" /> }
   ];
 
@@ -118,7 +235,7 @@ export function ClientDashboard() {
                       <div className={`text-4xl font-bold ${getScoreColor(creditScore)}`}>
                         {creditScore}
                       </div>
-                      <div className="text-sm text-gray-500">max 1000</div>
+                      <div className="text-sm text-gray-500">max 850</div>
                     </div>
                   </div>
                 </div>
@@ -130,7 +247,7 @@ export function ClientDashboard() {
                 <div className="flex items-center justify-center mt-2">
                   <TrendingUp className="h-4 w-4 text-success-500 mr-1" />
                   <span className="text-sm text-success-600">
-                    +{scoreChange} tokens this month
+                    +{scoreChange} points this month
                   </span>
                 </div>
               </div>
@@ -188,64 +305,143 @@ export function ClientDashboard() {
 
         {/* Tab Content */}
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Credit Factors */}
+          <div className="space-y-6">
+            {/* Credit Alerts Summary */}
+            {showAlerts && creditAlerts.length > 0 && (
+              <Card>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                    <Bell className="h-5 w-5 mr-2 text-warning-500" />
+                    Recent Credit Alerts
+                  </h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setShowAlerts(false)}
+                  >
+                    Dismiss All
+                  </Button>
+                </div>
+                <div className="space-y-3">
+                  {creditAlerts.slice(0, 2).map((alert) => (
+                    <div 
+                      key={alert.id} 
+                      className={`p-4 border-l-4 bg-gray-50 rounded-r-lg ${getAlertBorderColor(alert.severity)}`}
+                    >
+                      <div className="flex items-start">
+                        <div className="mr-3 mt-0.5">
+                          {getAlertIcon(alert.type)}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">{alert.title}</h4>
+                          <p className="text-sm text-gray-600 mt-1">{alert.message}</p>
+                          <p className="text-xs text-gray-500 mt-2">{alert.timestamp}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setActiveTab('alerts')}
+                  >
+                    View All Alerts
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {/* Quick Actions */}
             <Card>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Credit Score Factors
-              </h3>
-              <div className="space-y-4">
-                {creditFactors.map((factor, index) => (
-                  <div key={index}>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-700">
-                        {factor.name}
-                      </span>
-                      <span className="text-sm font-bold text-gray-900">
-                        {factor.score}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full transition-all duration-500 ${
-                          factor.color === 'success' ? 'bg-success-500' :
-                          factor.color === 'warning' ? 'bg-warning-500' : 'bg-primary-500'
-                        }`}
-                        style={{ width: `${factor.score}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Button 
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab('applications')}
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  View Applications
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab('simulator')}
+                >
+                  <Calculator className="h-4 w-4 mr-2" />
+                  Credit Simulator
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => setActiveTab('education')}
+                >
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Learn More
+                </Button>
               </div>
             </Card>
 
-            {/* Recommendations */}
-            <Card>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Improvement Recommendations
-              </h3>
-              <div className="space-y-4">
-                {recommendations.map((rec, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <div className={`p-2 rounded-lg ${
-                      rec.priority === 'high' ? 'bg-error-100 text-error-600' :
-                      rec.priority === 'medium' ? 'bg-warning-100 text-warning-600' :
-                      'bg-success-100 text-success-600'
-                    }`}>
-                      {rec.icon}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Credit Factors */}
+              <Card>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Credit Score Factors
+                </h3>
+                <div className="space-y-4">
+                  {creditFactors.map((factor, index) => (
+                    <div key={index}>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          {factor.name}
+                        </span>
+                        <span className="text-sm font-bold text-gray-900">
+                          {factor.score}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className={`h-2 rounded-full transition-all duration-500 ${
+                            factor.color === 'success' ? 'bg-success-500' :
+                            factor.color === 'warning' ? 'bg-warning-500' : 'bg-primary-500'
+                          }`}
+                          style={{ width: `${factor.score}%` }}
+                        ></div>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-medium text-gray-900">
-                        {rec.title}
-                      </h4>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {rec.description}
-                      </p>
+                  ))}
+                </div>
+              </Card>
+
+              {/* Recommendations */}
+              <Card>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Improvement Recommendations
+                </h3>
+                <div className="space-y-4">
+                  {recommendations.map((rec, index) => (
+                    <div key={index} className="flex items-start space-x-3">
+                      <div className={`p-2 rounded-lg ${
+                        rec.priority === 'high' ? 'bg-error-100 text-error-600' :
+                        rec.priority === 'medium' ? 'bg-warning-100 text-warning-600' :
+                        'bg-success-100 text-success-600'
+                      }`}>
+                        {rec.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-medium text-gray-900">
+                          {rec.title}
+                        </h4>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {rec.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
+                  ))}
+                </div>
+              </Card>
+            </div>
           </div>
         )}
 
@@ -305,69 +501,281 @@ export function ClientDashboard() {
           </Card>
         )}
 
-        {activeTab === 'calculator' && (
-          <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Loan Calculator
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Loan Amount
-                  </label>
-                  <input
-                    type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="Enter amount"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Interest Rate (%)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="Enter rate"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Loan Term (months)
-                  </label>
-                  <input
-                    type="number"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="Enter term"
-                  />
-                </div>
-                <Button className="w-full">
-                  Calculate Payment
+        {activeTab === 'alerts' && (
+          <div className="space-y-6">
+            <Card>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Your Credit Alerts</h3>
+                <Button size="sm">
+                  Mark All as Read
                 </Button>
               </div>
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                  Calculation Results
-                </h4>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Monthly Payment:</span>
-                    <span className="font-semibold">$0.00</span>
+              
+              <div className="space-y-4">
+                {creditAlerts.map((alert) => (
+                  <div 
+                    key={alert.id} 
+                    className={`p-6 border-l-4 bg-white border border-gray-200 rounded-r-lg hover:shadow-md transition-shadow ${getAlertBorderColor(alert.severity)}`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start">
+                        <div className="mr-4 mt-1">
+                          {getAlertIcon(alert.type)}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center mb-2">
+                            <h4 className="font-semibold text-gray-900 mr-3">{alert.title}</h4>
+                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                              alert.severity === 'high' ? 'bg-error-100 text-error-800' :
+                              alert.severity === 'medium' ? 'bg-warning-100 text-warning-800' :
+                              'bg-primary-100 text-primary-800'
+                            }`}>
+                              {alert.severity.toUpperCase()}
+                            </span>
+                          </div>
+                          <p className="text-gray-600 mb-3">{alert.message}</p>
+                          <p className="text-sm text-gray-500">{alert.timestamp}</p>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        Dismiss
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Interest:</span>
-                    <span className="font-semibold">$0.00</span>
+                ))}
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'simulator' && (
+          <div className="space-y-6">
+            <Card>
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">Credit Score Simulator</h3>
+              <p className="text-gray-600 mb-6">
+                See how different financial behaviors might impact your credit score.
+              </p>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Input Controls */}
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Current Credit Score
+                    </label>
+                    <div className="flex items-center space-x-4">
+                      <input
+                        type="range"
+                        min="300"
+                        max="850"
+                        value={simulatorScore}
+                        onChange={(e) => setSimulatorScore(Number(e.target.value))}
+                        className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <span className="text-lg font-semibold text-gray-900 w-12">
+                        {simulatorScore}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>300</span>
+                      <span>850</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Amount:</span>
-                    <span className="font-semibold">$0.00</span>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Monthly Payment Amount ($)
+                    </label>
+                    <input
+                      type="number"
+                      value={simulatorPayment}
+                      onChange={(e) => setSimulatorPayment(Number(e.target.value))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Enter payment amount"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Higher payments improve payment history (35% of score)
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Total Debt Amount ($)
+                    </label>
+                    <input
+                      type="number"
+                      value={simulatorDebt}
+                      onChange={(e) => setSimulatorDebt(Number(e.target.value))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Enter total debt"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Lower debt improves credit utilization (30% of score)
+                    </p>
+                  </div>
+                </div>
+
+                {/* Results */}
+                <div className="space-y-6">
+                  <div className="bg-gray-50 rounded-lg p-6">
+                    <h4 className="font-semibold text-gray-900 mb-4">Projected Credit Score</h4>
+                    
+                    <div className="text-center mb-4">
+                      <div className="text-4xl font-bold text-primary-600 mb-2">
+                        {simulateScoreChange(simulatorScore, simulatorPayment, simulatorDebt)}
+                      </div>
+                      <div className="flex items-center justify-center space-x-2">
+                        {simulateScoreChange(simulatorScore, simulatorPayment, simulatorDebt) > simulatorScore ? (
+                          <ArrowUp className="h-4 w-4 text-success-500" />
+                        ) : simulateScoreChange(simulatorScore, simulatorPayment, simulatorDebt) < simulatorScore ? (
+                          <ArrowDown className="h-4 w-4 text-error-500" />
+                        ) : null}
+                        <span className={`text-sm font-medium ${
+                          simulateScoreChange(simulatorScore, simulatorPayment, simulatorDebt) > simulatorScore ? 'text-success-600' :
+                          simulateScoreChange(simulatorScore, simulatorPayment, simulatorDebt) < simulatorScore ? 'text-error-600' :
+                          'text-gray-600'
+                        }`}>
+                          {simulateScoreChange(simulatorScore, simulatorPayment, simulatorDebt) > simulatorScore ? '+' : ''}
+                          {simulateScoreChange(simulatorScore, simulatorPayment, simulatorDebt) - simulatorScore} points
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-center">
+                      {(() => {
+                        const newScore = simulateScoreChange(simulatorScore, simulatorPayment, simulatorDebt);
+                        const category = getScoreCategory(newScore);
+                        return (
+                          <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${category.bgColor} ${category.color}`}>
+                            {category.label}
+                          </span>
+                        );
+                      })()}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-gray-900">Impact Breakdown</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Payment History (35%)</span>
+                        <span className={`font-medium ${
+                          simulatorPayment >= 500 ? 'text-success-600' :
+                          simulatorPayment >= 300 ? 'text-warning-600' :
+                          'text-error-600'
+                        }`}>
+                          {simulatorPayment >= 500 ? 'Excellent' :
+                           simulatorPayment >= 300 ? 'Good' :
+                           simulatorPayment >= 100 ? 'Fair' : 'Poor'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Credit Utilization (30%)</span>
+                        <span className={`font-medium ${
+                          (simulatorDebt / 20000) < 0.1 ? 'text-success-600' :
+                          (simulatorDebt / 20000) < 0.3 ? 'text-warning-600' :
+                          'text-error-600'
+                        }`}>
+                          {((simulatorDebt / 20000) * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'education' && (
+          <div className="space-y-6">
+            <Card>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Educational Resources</h3>
+                <Button variant="outline" size="sm">
+                  View All Resources
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {educationalTips.map((tip) => (
+                  <div key={tip.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-primary-100 text-primary-800">
+                          {tip.category}
+                        </span>
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                          {tip.difficulty}
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-500">{tip.readTime}</span>
+                    </div>
+                    <h4 className="font-semibold text-gray-900 mb-3">{tip.title}</h4>
+                    <p className="text-gray-600 text-sm mb-4">{tip.content}</p>
+                    <Button variant="ghost" size="sm" className="p-0">
+                      Read More →
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Quick Reference */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Credit Score Ranges</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Excellent (800-850)</span>
+                    <span className="text-sm font-medium text-success-600">Best rates available</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Very Good (740-799)</span>
+                    <span className="text-sm font-medium text-success-600">Above average rates</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Good (670-739)</span>
+                    <span className="text-sm font-medium text-warning-600">Near average rates</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Fair (580-669)</span>
+                    <span className="text-sm font-medium text-warning-600">Below average rates</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Poor (300-579)</span>
+                    <span className="text-sm font-medium text-error-600">Highest rates/deposits</span>
+                  </div>
+                </div>
+              </Card>
+
+              <Card>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Credit Score Factors</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Payment History</span>
+                    <span className="text-sm font-medium text-gray-900">35%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Credit Utilization</span>
+                    <span className="text-sm font-medium text-gray-900">30%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Length of Credit History</span>
+                    <span className="text-sm font-medium text-gray-900">15%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Credit Mix</span>
+                    <span className="text-sm font-medium text-gray-900">10%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">New Credit</span>
+                    <span className="text-sm font-medium text-gray-900">10%</span>
+                  </div>
+                </div>
+              </Card>
             </div>
-          </Card>
+          </div>
         )}
 
         {activeTab === 'improvement' && (
