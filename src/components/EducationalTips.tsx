@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BookOpen, Search, Filter, Clock, User, TrendingUp, CreditCard, Shield, Calculator, Award, ChevronRight, Star, CheckCircle } from 'lucide-react';
-import { Card } from '../UI/Card';
-import { Button } from '../UI/Button';
+import { Card } from '../components/UI/Card'
+import { Button } from '../components/UI/Button';
 
 export function EducationalTips() {
   const [searchTerm, setSearchTerm] = useState('');

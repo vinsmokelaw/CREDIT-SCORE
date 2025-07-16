@@ -1,57 +1,93 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { DollarSign, LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 export function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/');
-    setIsMobileMenuOpen(true);
+    setIsMobileMenuOpen(false);
   };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const scrollToSection = (sectionId: string) => {
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
+    <header className="bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="bg-purple-500 p-2 rounded-lg group-hover:bg-purple-600 transition-colors">
+            <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-2 rounded-xl group-hover:from-purple-600 group-hover:to-purple-700 transition-all duration-300 shadow-lg">
               <DollarSign className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">Berries</span>
+            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
+              BERRIES
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {!isAuthenticated ? (
               <>
-                <Link to="/" className="text-gray-600 hover:text-purple-500 transition-colors">
+                <button 
+                  onClick={() => scrollToSection('hero')}
+                  className="text-gray-600 hover:text-purple-600 transition-colors font-medium"
+                >
                   Home
-                </Link>
-                <Link to="/features" className="text-gray-600 hover:text-purple-500 transition-colors">
+                </button>
+                <button 
+                  onClick={() => scrollToSection('features')}
+                  className="text-gray-600 hover:text-purple-600 transition-colors font-medium"
+                >
                   Features
-                </Link>
-                <Link to="/about" className="text-gray-600 hover:text-purple-500 transition-colors">
-                  About
-                </Link>
+                </button>
+                <button 
+                  onClick={() => scrollToSection('how-it-works')}
+                  className="text-gray-600 hover:text-purple-600 transition-colors font-medium"
+                >
+                  How It Works
+                </button>
+                <button 
+                  onClick={() => scrollToSection('testimonials')}
+                  className="text-gray-600 hover:text-purple-600 transition-colors font-medium"
+                >
+                  Testimonials
+                </button>
                 <Link 
                   to="/login" 
-                  className="text-purple-500 hover:text-purple-600 font-medium transition-colors"
+                  className="text-purple-600 hover:text-purple-700 font-medium transition-colors"
                 >
                   Login
                 </Link>
                 <Link 
                   to="/signup" 
-                  className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors"
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-2 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Sign Up
                 </Link>
@@ -60,7 +96,7 @@ export function Header() {
               <>
                 <Link 
                   to={user?.type === 'client' ? '/client-dashboard' : '/bank-dashboard'} 
-                  className="text-gray-600 hover:text-purple-500 transition-colors"
+                  className="text-gray-600 hover:text-purple-600 transition-colors font-medium"
                 >
                   Dashboard
                 </Link>
@@ -71,7 +107,7 @@ export function Header() {
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-lg hover:bg-gray-100"
                     title="Logout"
                   >
                     <LogOut className="h-5 w-5" />
@@ -84,7 +120,7 @@ export function Header() {
           {/* Mobile menu button */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden text-gray-600 hover:text-gray-900 transition-colors"
+            className="md:hidden text-gray-600 hover:text-gray-900 transition-colors p-2 rounded-lg hover:bg-gray-100"
           >
             {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -92,41 +128,44 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100">
+          <div className="md:hidden py-4 border-t border-gray-100 bg-white/95 backdrop-blur-md">
             <nav className="flex flex-col space-y-4">
               {!isAuthenticated ? (
                 <>
-                  <Link 
-                    to="/" 
-                    className="text-gray-600 hover:text-purple-500 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                  <button 
+                    onClick={() => scrollToSection('hero')}
+                    className="text-gray-600 hover:text-purple-600 transition-colors font-medium text-left"
                   >
                     Home
-                  </Link>
-                  <Link 
-                    to="/features" 
-                    className="text-gray-600 hover:text-purple-500 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                  </button>
+                  <button 
+                    onClick={() => scrollToSection('features')}
+                    className="text-gray-600 hover:text-purple-600 transition-colors font-medium text-left"
                   >
                     Features
-                  </Link>
-                  <Link 
-                    to="/about" 
-                    className="text-gray-600 hover:text-purple-500 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                  </button>
+                  <button 
+                    onClick={() => scrollToSection('how-it-works')}
+                    className="text-gray-600 hover:text-purple-600 transition-colors font-medium text-left"
                   >
-                    About
-                  </Link>
+                    How It Works
+                  </button>
+                  <button 
+                    onClick={() => scrollToSection('testimonials')}
+                    className="text-gray-600 hover:text-purple-600 transition-colors font-medium text-left"
+                  >
+                    Testimonials
+                  </button>
                   <Link 
                     to="/login" 
-                    className="text-purple-500 hover:text-purple-600 font-medium transition-colors"
+                    className="text-purple-600 hover:text-purple-700 font-medium transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Login
                   </Link>
                   <Link 
                     to="/signup" 
-                    className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors text-center"
+                    className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 text-center shadow-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign Up
@@ -136,7 +175,7 @@ export function Header() {
                 <>
                   <Link 
                     to={user?.type === 'client' ? '/client-dashboard' : '/bank-dashboard'} 
-                    className="text-gray-600 hover:text-purple-500 transition-colors"
+                    className="text-gray-600 hover:text-purple-600 transition-colors font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Dashboard
@@ -148,7 +187,7 @@ export function Header() {
                     </div>
                     <button
                       onClick={handleLogout}
-                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                      className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-lg hover:bg-gray-100"
                       title="Logout"
                     >
                       <LogOut className="h-5 w-5" />
