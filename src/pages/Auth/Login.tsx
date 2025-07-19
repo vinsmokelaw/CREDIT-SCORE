@@ -98,7 +98,7 @@ export function Login() {
             Welcome Back
           </h2>
           <p className="mt-3 text-lg text-purple-200">
-            Sign in to your CreditScore Pro account
+            Sign in to your Berries account
           </p>
           <div className="flex justify-center mt-4">
             <Sparkles className="h-6 w-6 text-purple-300 animate-pulse" />

@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export function BankDashboard() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('overview');zr
   const [searchTerm, setSearchTerm] = useState('');
   const [simulatorScore, setSimulatorScore] = useState(650);
   const [simulatorPayment, setSimulatorPayment] = useState(500);

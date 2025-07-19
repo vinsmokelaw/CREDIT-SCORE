@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus, Eye, EyeOff, Building, User, DollarSign, Sparkles } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
+// import { supabase } from '../../supabaseClient'; // Adjust the import path as needed
 import { Button } from '../../components/UI/Button';
 import { Input } from '../../components/UI/Input';
 import { Card } from '../../components/UI/Card';
@@ -34,7 +34,6 @@ export function Signup() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,19 +63,45 @@ export function Signup() {
 
     setIsLoading(true);
     try {
-      const success = await signup(
-        formData.name,
-        formData.email, 
-        formData.password, 
-        formData.userType,
-        formData.userType === 'bank' ? formData.bank : undefined
-      );
-      
-      if (success) {
-        navigate(formData.userType === 'client' ? '/client-dashboard' : '/bank-dashboard');
+      // Sign up with Supabase
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            name: formData.name,
+            user_type: formData.userType,
+            ...(formData.userType === 'bank' && { bank: formData.bank })
+          }
+        }
+      });
+
+      if (authError) {
+        throw authError;
       }
+
+      // If you want to store additional user data in a separate table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: authData.user?.id,
+          name: formData.name,
+          email: formData.email,
+          user_type: formData.userType,
+          bank: formData.userType === 'bank' ? formData.bank : null,
+          updated_at: new Date().toISOString()
+        });
+
+      if (profileError) {
+        throw profileError;
+      }
+
+      // Navigate based on user type
+      navigate(formData.userType === 'client' ? '/client-dashboard' : '/bank-dashboard');
+      
     } catch (error) {
-      setErrors({ general: 'Sign up failed. Please try again.' });
+      console.error('Signup error:', error);
+      setErrors({ general: error instanceof Error ? error.message : 'Sign up failed. Please try again.' });
     } finally {
       setIsLoading(false);
     }
@@ -117,7 +142,7 @@ export function Signup() {
             Create Your Account
           </h2>
           <p className="mt-3 text-lg text-purple-200">
-            Join CreditScore Pro and start your financial journey
+            Join Berries and start your financial journey
           </p>
           <div className="flex justify-center mt-4">
             <Sparkles className="h-6 w-6 text-purple-300 animate-pulse" />
