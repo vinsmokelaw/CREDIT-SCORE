@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { UserPlus, Eye, EyeOff, Building, User, DollarSign, Sparkles } from 'lucide-react';
-// import { supabase } from '../../supabaseClient'; // Adjust the import path as needed
-import { Button } from '../../components/UI/Button';
-import { Input } from '../../components/UI/Input';
-import { Card } from '../../components/UI/Card';
+import { useAuth } from '../../contexts/AuthContext';
 
 const zimbabweBanks = [
   'CBZ Bank',
@@ -34,12 +31,15 @@ export function Signup() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   
-  const navigate = useNavigate();
+  const { signup } = useAuth();
+  const [message, setMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    
+    setMessage('');
+    setIsLoading(true);
+
     // Validation
     const newErrors: Record<string, string> = {};
     if (!formData.name) newErrors.name = 'Full name is required';
@@ -58,53 +58,25 @@ export function Signup() {
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setIsLoading(false);
       return;
     }
 
-    setIsLoading(true);
-    try {
-      // Sign up with Supabase
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            name: formData.name,
-            user_type: formData.userType,
-            ...(formData.userType === 'bank' && { bank: formData.bank })
-          }
-        }
-      });
+    const { success, error } = await signup(
+      formData.name,
+      formData.email,
+      formData.password,
+      formData.userType,
+      formData.bank
+    );
 
-      if (authError) {
-        throw authError;
-      }
-
-      // If you want to store additional user data in a separate table
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: authData.user?.id,
-          name: formData.name,
-          email: formData.email,
-          user_type: formData.userType,
-          bank: formData.userType === 'bank' ? formData.bank : null,
-          updated_at: new Date().toISOString()
-        });
-
-      if (profileError) {
-        throw profileError;
-      }
-
-      // Navigate based on user type
-      navigate(formData.userType === 'client' ? '/client-dashboard' : '/bank-dashboard');
-      
-    } catch (error) {
-      console.error('Signup error:', error);
-      setErrors({ general: error instanceof Error ? error.message : 'Sign up failed. Please try again.' });
-    } finally {
-      setIsLoading(false);
+    if (error) {
+      setErrors({ general: error });
+    } else if (success) {
+      setMessage('Signup successful! Please check your email to confirm your account.');
     }
+
+    setIsLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -151,6 +123,11 @@ export function Signup() {
 
         <div className="backdrop-blur-md bg-white/10 p-8 rounded-3xl shadow-2xl border border-white/20">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {message && (
+              <div className="bg-green-500/20 border border-green-400/50 text-green-100 px-4 py-3 rounded-xl backdrop-blur-sm">
+                {message}
+              </div>
+            )}
             {errors.general && (
               <div className="bg-red-500/20 border border-red-400/50 text-red-100 px-4 py-3 rounded-xl backdrop-blur-sm">
                 {errors.general}

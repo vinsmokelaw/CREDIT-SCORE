@@ -1,10 +1,8 @@
+
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { LogIn, Eye, EyeOff, Building, User, DollarSign, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Button } from '../../components/UI/Button';
-import { Input } from '../../components/UI/Input';
-import { Card } from '../../components/UI/Card';
 
 const zimbabweBanks = [
   'CBZ Bank',
@@ -29,44 +27,21 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login } = useAuth();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    
-    // Validation
-    const newErrors: Record<string, string> = {};
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    if (formData.userType === 'bank' && !formData.bank) {
-      newErrors.bank = 'Please select your bank';
-    }
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+    setIsLoading(true);
+
+    const { success, error } = await login(formData.email, formData.password);
+
+    if (!success) {
+      setErrors({ general: error || 'Login failed. Please try again.' });
     }
 
-    setIsLoading(true);
-    try {
-      const success = await login(
-        formData.email, 
-        formData.password, 
-        formData.userType,
-        formData.userType === 'bank' ? formData.bank : undefined
-      );
-      
-      if (success) {
-        navigate(formData.userType === 'client' ? '/client-dashboard' : '/bank-dashboard');
-      }
-    } catch (error) {
-      setErrors({ general: 'Login failed. Please try again.' });
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -265,6 +240,7 @@ export function Login() {
             <p className="text-sm text-purple-200">
               Don't have an account?{' '}
               <Link
+
                 to="/signup"
                 className="font-medium text-purple-300 hover:text-white transition-colors"
               >
