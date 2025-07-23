@@ -53,6 +53,7 @@ function Page() {
 // 🌐 Route definitions
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
+  console.log("🔐 Auth State:", { isAuthenticated, user });
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -114,8 +115,10 @@ function AppRoutes() {
   );
 }
 
-// 🔌 Wrap app with Auth and Router
+// // 🔌 Wrap app with Auth and Router
 function App() {
+  console.log("✅ App is rendering");
+
   return (
     <AuthProvider>
       <Router>
@@ -126,3 +129,8 @@ function App() {
 }
 
 export default App;
+
+// App.tsx
+// export default function App() {
+//   return <div style={{ color: 'red' }}>Hello World</div>;
+// }
